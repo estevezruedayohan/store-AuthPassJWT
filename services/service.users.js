@@ -1,42 +1,46 @@
 const boom = require('@hapi/boom');
-// const getConnection = require('../libs/postgres');
-const pool = require('../libs/postgres.pool');
-const sequelize = require('../libs/sequelize');
+const { models } = require('../libs/sequelize');
 
 class UserService {
-  constructor() {
-    this.pool = pool;
-    this.pool.on('error', (err) => console.error(err));
-  }
+  constructor() {}
 
   async findAll() {
-    const query = 'SELECT * FROM users;';
-    // const users = await this.pool.query(query);
-    const [data] = await sequelize.query(query);
-    return data;
+    const clients = await models.User.findAll();
+    return clients;
   }
 
-  async findOne(id) {
-    const query = `SELECT * FROM users WHERE id=${id};`;
-    // const client = await getConnection();
-    // const user = await client.query(`SELECT * FROM users WHERE id=${id};`);
-    // const user = await this.pool.query(query);
-    const [data] = await sequelize.query(query);
-
-    if (data.length === 0) {
+  async findByPk(id) {
+    const user = await models.User.findByPk(id);
+    if (user === null) {
       throw boom.notFound('USER NOT FOUND - FIND BY ID');
     }
-    return data;
+    return user;
   }
 
-  // async findOne(id) {
-  //   const client = await getConnection();
-  //   const user = await client.query(`SELECT * FROM users WHERE id=${id};`);
-  //   if (user === undefined) {
-  //     throw boom.notFound('USER NOT FOUND - FIND BY ID');
-  //   }
-  //   return user.rows;
-  // }
+  async findByEmail(email) {
+    const user = await models.User.findOne({ where: { email: `${email}` } });
+    if (user === null) {
+      throw boom.notFound('USER NOT FOUND - FIND BY EMAIL');
+    }
+    return user;
+  }
+
+  async create(user) {
+    const newUser = await models.User.create(user);
+    return newUser;
+  }
+
+  async update(id, changes) {
+    const user = await this.findByPk(id);
+    const modifiedUser = user.update(changes);
+    return modifiedUser; // enviar directamente el resultado
+  }
+
+  async delete(id) {
+    const user = await this.findByPk(id);
+    await user.destroy();
+    return id;
+  }
 }
 
 module.exports = UserService;
