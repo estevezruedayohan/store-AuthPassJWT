@@ -3,14 +3,13 @@ const Joi = require('joi');
 const id = Joi.string();
 const name = Joi.string().min(5).max(45);
 const price = Joi.number().positive().integer().min(5);
-const image = Joi.string().uri().trim().min(10);
+const image = Joi.string().uri().min(10);
 const isBlock = Joi.boolean();
 
 const createProductSchema = Joi.object({
   name: name.required(),
   price: price.required(),
   image: image.required(),
-  isBlock: isBlock.required(),
 });
 
 const updateProductSchema = Joi.object({

@@ -5,8 +5,10 @@ class UserService {
   constructor() {}
 
   async findAll() {
-    const clients = await models.User.findAll();
-    return clients;
+    const users = await models.User.findAll({
+      include: ['customer'],
+    });
+    return users;
   }
 
   async findByPk(id) {
