@@ -50,7 +50,10 @@ class Customer extends Model {
       as: 'user',
       foreignKey: 'userId',
     });
-    // console.log(models.User);
+    this.hasMany(models.Order, {
+      as: 'orders',
+      foreignKey: 'customerId',
+    });
   }
 
   static config(sequelize) {

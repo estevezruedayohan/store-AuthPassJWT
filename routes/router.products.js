@@ -4,7 +4,6 @@ const validatorHandler = require('../middlewares/validator.Handler');
 const {
   createProductSchema,
   updateProductSchema,
-  deleteProductSchema,
   readProductSchema,
 } = require('../schemas/schema.products');
 
@@ -12,9 +11,13 @@ const router = express.Router();
 const servicio = new ProductService();
 
 // Método para llamar todos los productos
-router.get('/', async (req, res) => {
-  const rta = await servicio.findAll();
-  res.json(rta);
+router.get('/', async (req, res, next) => {
+  try {
+    const rta = await servicio.findAll();
+    res.json(rta);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Método para llamar un solo producto
@@ -24,7 +27,7 @@ router.get(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const rta = await servicio.findOne(id);
+      const rta = await servicio.findByPk(id);
       res.json(rta);
     } catch (error) {
       next(error);
@@ -36,13 +39,14 @@ router.get(
 router.post(
   '/',
   validatorHandler(createProductSchema, 'body'),
-  async (req, res) => {
-    const body = req.body;
-    const rta = await servicio.create(body);
-    res.status(201).json({
-      rta,
-      message: 'Esto es PRODUCTS - CREATE',
-    });
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const rta = await servicio.create(body);
+      res.status(201).json(rta);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
@@ -66,10 +70,10 @@ router.patch(
 // Método para BORRAR un producto
 router.delete(
   '/:id',
-  validatorHandler(deleteProductSchema, 'params'),
+  validatorHandler(readProductSchema, 'params'),
   async (req, res, next) => {
     try {
-      const id = req.params.id;
+      const { id } = req.params;
       const rta = await servicio.delete(id);
       res.json(rta);
     } catch (error) {
