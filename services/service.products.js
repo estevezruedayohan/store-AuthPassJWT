@@ -12,10 +12,16 @@ class ProductService {
     return newProduct;
   }
 
-  async findAll() {
-    const products = await models.Product.findAll({
+  async findAll(query) {
+    const options = {
       include: ['category'],
-    });
+    };
+    const { limit, offset } = query;
+    if (limit && offset) {
+      options.limit = parseInt(limit);
+      options.offset = parseInt(offset);
+    }
+    const products = await models.Product.findAll(options);
     if (products === null) {
       throw boom.notFound('PRODUCTS NOT FOUND');
     }

@@ -5,20 +5,25 @@ const {
   createProductSchema,
   updateProductSchema,
   readProductSchema,
+  queryProductSchema,
 } = require('../schemas/schema.products');
 
 const router = express.Router();
 const servicio = new ProductService();
 
 // Método para llamar todos los productos
-router.get('/', async (req, res, next) => {
-  try {
-    const rta = await servicio.findAll();
-    res.json(rta);
-  } catch (error) {
-    next(error);
+router.get(
+  '/',
+  validatorHandler(queryProductSchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const rta = await servicio.findAll(req.query);
+      res.json(rta);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 // Método para llamar un solo producto
 router.get(
