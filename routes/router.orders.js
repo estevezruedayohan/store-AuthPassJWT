@@ -32,7 +32,7 @@ router.get(
   }
 );
 
-// Método para CREAR un usuario
+// Método para CREAR una orden
 router.post(
   '/',
   validatorHandler(createOrderSchema, 'body'),
@@ -47,7 +47,7 @@ router.post(
   }
 );
 
-// Método para ACTUALIZAR un usuario
+// Método para ACTUALIZAR una orden
 router.patch(
   '/:id',
   validatorHandler(readOrderSchema, 'params'),
@@ -64,7 +64,7 @@ router.patch(
   }
 );
 
-// Método para BORRAR un usuario
+// Método para BORRAR una orden
 router.delete(
   '/:id',
   validatorHandler(readOrderSchema, 'params'),
