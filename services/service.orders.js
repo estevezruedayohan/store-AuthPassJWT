@@ -30,7 +30,7 @@ class OrderService {
     if (!newOrder) {
       throw boom.notAcceptable('ALGO SALIO MAL');
     }
-    return order;
+    return newOrder;
   }
 
   async update(id, changes) {

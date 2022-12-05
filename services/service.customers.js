@@ -20,11 +20,8 @@ class CustomerService {
   }
 
   async create(customer) {
-    // const newUser = await models.User.create(customer.user);
     const newCustomer = await models.Customer.create(customer, {
       include: ['user'],
-      // ...customer,
-      // userId: newUser.id
     });
     return newCustomer;
   }
