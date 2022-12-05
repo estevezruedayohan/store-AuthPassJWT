@@ -12,9 +12,13 @@ const servicio = new CustomerService();
 
 // M+etodo para llamar todos los clientes
 
-router.get('/', async (req, res) => {
-  const rta = await servicio.findAll();
-  res.json(rta);
+router.get('/', async (req, res, next) => {
+  try {
+    const rta = await servicio.findAll();
+    res.json(rta);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Método para traer un solo cliente por primarykey

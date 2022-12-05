@@ -27,7 +27,10 @@ class OrderService {
 
   async create(order) {
     const newOrder = await models.Order.create(order);
-    return newOrder;
+    if (!newOrder) {
+      throw boom.notAcceptable('ALGO SALIO MAL');
+    }
+    return order;
   }
 
   async update(id, changes) {
