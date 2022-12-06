@@ -28,6 +28,8 @@ const options = {
 
 app.use(cors(options));
 
+require('./utils/auth/index');
+
 app.get('/nueva-ruta', checkApiKey, (req, res) => {
   res.send('Hola, soy una nueva ruta');
 });
