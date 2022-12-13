@@ -4,6 +4,12 @@
 # md personal
 apuntes.md
 
+# archivos de prueba
+pass-check.js
+pass-hash.js
+token-sign.js
+token-verify.js
+
 ### Linux ###
 *~
 
