@@ -6,6 +6,7 @@ const {
   updateCategorySchema,
   readCategorySchema,
 } = require('../schemas/schema.categories');
+const passport = require('passport');
 
 const router = express.Router();
 const servicio = new CategoriesService();
@@ -35,6 +36,7 @@ router.get(
 // Método para CREAR una Categoria
 router.post(
   '/',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createCategorySchema, 'body'),
   async (req, res, next) => {
     try {
