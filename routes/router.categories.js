@@ -7,20 +7,28 @@ const {
   readCategorySchema,
 } = require('../schemas/schema.categories');
 const passport = require('passport');
+const { checkAdminRole, checkRoles } = require('./../middlewares/auth.handler');
 
 const router = express.Router();
 const servicio = new CategoriesService();
 
 // M+etodo para llamar todos las categorias
 
-router.get('/', async (req, res) => {
-  const rta = await servicio.findAll();
-  res.json(rta);
-});
+router.get(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles(['admin', 'seller', 'CUSTOMER']),
+  async (req, res) => {
+    const rta = await servicio.findAll();
+    res.json(rta);
+  }
+);
 
 // Método para traer una sola categoria por primarykey
 router.get(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles(['admin', 'seller']),
   validatorHandler(readCategorySchema, 'params'),
   async (req, res, next) => {
     try {
@@ -37,6 +45,7 @@ router.get(
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
+  checkRoles(['admin', 'seller']),
   validatorHandler(createCategorySchema, 'body'),
   async (req, res, next) => {
     try {
@@ -52,6 +61,8 @@ router.post(
 // Método para ACTUALIZAR una categoria
 router.patch(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles(['admin', 'seller']),
   validatorHandler(readCategorySchema, 'params'),
   validatorHandler(updateCategorySchema, 'body'),
   async (req, res, next) => {
@@ -69,6 +80,8 @@ router.patch(
 // Método para BORRAR una categoria
 router.delete(
   '/:id',
+  passport.authenticate('jwt', { session: false }),
+  checkRoles(['admin', 'seller']),
   validatorHandler(readCategorySchema, 'params'),
   async (req, res, next) => {
     try {
