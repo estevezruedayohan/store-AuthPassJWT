@@ -20,6 +20,19 @@ class CustomerService {
     return customer;
   }
 
+  async findByUserId(userId) {
+    const customer = await models.Customer.findOne({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (customer === null) {
+      throw boom.notFound('CUSTOMER NOT FOUND - FIND BY ID');
+    }
+    return customer.id;
+  }
+
   async create(customer) {
     const newhash = await bcryp.hash(customer.user.password, 10);
     const copyCustomer = {

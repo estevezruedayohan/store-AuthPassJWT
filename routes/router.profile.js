@@ -14,7 +14,6 @@ router.get(
     try {
       const user = req.user;
       const orders = await service.findByUserId(user.sub);
-      // console.log(orders);
       res.json(orders);
     } catch (error) {
       next(error);

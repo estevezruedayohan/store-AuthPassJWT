@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const OrderService = require('../services/service.orders');
 const validatorHandler = require('../middlewares/validator.Handler');
 const {
@@ -6,9 +7,12 @@ const {
   updateOrderSchema,
   readOrderSchema,
 } = require('../schemas/schema.orders');
+const CustomerService = require('../services/service.customers');
 
 const router = express.Router();
 const servicio = new OrderService();
+
+const serviceCustomer = new CustomerService();
 
 // M+etodo para llamar todos las ordenes
 
@@ -36,15 +40,16 @@ router.get(
   }
 );
 
-// Método para CREAR una orden
+// Método para CREAR una orden con Token
 router.post(
   '/',
-  validatorHandler(createOrderSchema, 'body'),
+  passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
     try {
-      const body = req.body;
-      const rta = await servicio.create(body);
-      res.status(201).json(rta);
+      const user = req.user;
+      const customerId = await serviceCustomer.findByUserId(user.sub);
+      const orders = await servicio.create({ customerId });
+      res.json(orders);
     } catch (error) {
       next(error);
     }

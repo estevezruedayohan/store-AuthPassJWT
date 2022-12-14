@@ -43,8 +43,8 @@ class OrderService {
     return orders;
   }
 
-  async create(order) {
-    const newOrder = await models.Order.create(order);
+  async create(customerId) {
+    const newOrder = await models.Order.create(customerId);
     if (!newOrder) {
       throw boom.notAcceptable('ALGO SALIO MAL');
     }
