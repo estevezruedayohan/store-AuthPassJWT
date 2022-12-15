@@ -35,6 +35,11 @@ const UserSchema = {
     defaultValue: DataTypes.NOW,
     field: 'created_at',
   },
+  recoveryToken: {
+    field: 'recovery_token',
+    allowNull: true,
+    type: DataTypes.STRING,
+  },
 };
 
 class User extends Model {
