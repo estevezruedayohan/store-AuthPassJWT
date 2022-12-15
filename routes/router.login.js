@@ -1,9 +1,9 @@
 const express = require('express');
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const { config } = require('./../config/config');
 
 const router = express.Router();
+const LoginService = require('./../services/service.login');
+const service = new LoginService();
 
 // Método para REALIZAR un LOGIN
 router.post(
@@ -12,19 +12,21 @@ router.post(
   async (req, res, next) => {
     try {
       const user = req.user;
-      const payload = {
-        sub: user.id,
-        role: user.rol,
-      };
-      const token = jwt.sign(payload, config.jwtSecret);
-      res.json({
-        user,
-        token,
-      });
+      res.json(service.signToken(user));
     } catch (error) {
       next(error);
     }
   }
 );
+
+router.post('/recovery', async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const rta = await service.sendMail(email);
+    res.json(rta);
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

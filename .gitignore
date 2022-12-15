@@ -9,6 +9,7 @@ pass-check.js
 pass-hash.js
 token-sign.js
 token-verify.js
+nodemailer-test.js
 
 ### Linux ###
 *~
