@@ -27,6 +27,7 @@ class LoginService {
       role: user.rol,
     };
     const token = jwt.sign(payload, config.jwtSecret);
+    delete user.dataValues.recoveryToken;
     return { user, token };
   }
 
@@ -66,6 +67,21 @@ class LoginService {
 
     await transporter.sendMail(infoMail);
     return { message: 'sent email succesfully ¡¡' };
+  }
+
+  async changePassword(token, newPassword) {
+    try {
+      const payload = jwt.verify(token, config.jwtSecret);
+      const user = await service.findByPk(payload.sub);
+      if (user.recoveryToken !== token) {
+        throw boom.unauthorized();
+      }
+      const hash = await bcrypt.hash(newPassword, 10);
+      await service.update(user.id, { recoveryToken: null, password: hash });
+      return { message: 'Password changed' };
+    } catch (error) {
+      throw boom.unauthorized();
+    }
   }
 }
 
